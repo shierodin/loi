@@ -2,23 +2,35 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
+
+  <!-- 📱 모바일 대응 필수 -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <title>무인도 생존</title>
-  <link rel="stylesheet" href="style.css" />
+
+  <!-- 스타일 -->
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<h1>무인도 생존</h1>
+  <h1>무인도 생존</h1>
 
-<pre id="log"></pre>
+  <!-- 스토리 / 로그 출력 창 -->
+  <pre id="log"></pre>
 
-<div id="status"></div>
+  <!-- 상태 표시 -->
+  <div id="status"></div>
 
-<div class="buttons">
-  <button onclick="getFood()">음식 구하기</button>
-  <button onclick="useSkill()">스킬 쓰기</button>
-  <button onclick="fishing()">낚시</button>
-</div>
+  <!-- 버튼 영역 -->
+  <div class="buttons">
+    <button onclick="getFood()">🍖 음식 구하기</button>
+    <button onclick="useSkill()">⚔️ 스킬 쓰기</button>
+    <button onclick="fishing()">🎣 낚시</button>
+    <button onclick="eatFood()">🍴 음식 먹기</button>
+  </div>
 
-<script src="script.js" defer></script>
+  <!-- 게임 로직 -->
+  <script src="script.js" defer></script>
+
 </body>
 </html>
