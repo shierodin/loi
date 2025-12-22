@@ -1,3 +1,4 @@
+// ===== 상태 =====
 let y = 0;
 let sta = 100;
 let sp = 100;
@@ -10,6 +11,7 @@ let isFishing = false;
 const logEl = document.getElementById("log");
 const statusEl = document.getElementById("status");
 
+// ===== 출력 =====
 function log(msg = "") {
   logEl.textContent += msg + "\n";
   logEl.scrollTop = logEl.scrollHeight;
@@ -17,31 +19,65 @@ function log(msg = "") {
 
 function updateStatus() {
   statusEl.textContent =
-    `day ${day} | hp ${hp} | sp ${sp} | sta ${sta} | food ${food}`;
+    `day ${day} | hp ${hp} | sp ${sp} | sta ${sta} | food ${food} | skill ${skill[0] ?? "없음"}`;
 }
 
-setInterval(() => {
-  sp -= 2;
-  hp += 4;
-  sta = Math.min(sta + 3, 300);
-  updateStatus();
-}, 5000);
+// ===== 스토리 =====
+log("비행기를 탔다");
+log("비행기는 언제 타도 설렌다");
+log('"오랜만에 여행이라니"');
+log('"아 좀 오래 걸리네 뭐 그냥 자야겠다"');
+log("그것이 비행기 안에서의 마지막 말이 될 줄은 몰랐다");
+log("무인도에 갇혔다");
+log("하.. 나 말곤 아무것도 할 줄 모른다");
+log("그렇기에 내가 모든걸 책임져야 한다");
+log("90일은 생존해야 구조대가 올 것 같다");
+log("이제 시작이다");
+log("");
 
-setInterval(() => {
-  day++;
-  log(`day ${day}`);
-}, 60000);
+// ===== 시간 시스템 =====
+setInterval(() => { sp -= 2; checkDeath(); updateStatus(); }, 5000);
+setInterval(() => { hp += 4; updateStatus(); }, 5000);
+setInterval(() => { sta = Math.min(300, sta + 3); updateStatus(); }, 1000);
+setInterval(() => { day++; log(`day ${day}`); }, 60000);
 
-function getFood() {
-  const f = Math.floor(Math.random() * 2) + 1;
-  const b = Math.floor(Math.random() * 3) + 1;
-
-  if (food < 20) {
-    log(`목표 음식 20개 구하기 현재:${food}`);
-    log("");
+// ===== 사망 =====
+function checkDeath() {
+  if (hp <= 0) {
+    alert("당신은 체력이 없어 죽었다");
+    location.reload();
   }
+  if (sp <= 0) {
+    alert("당신은 허기를 이기지 못해 죽었다");
+    location.reload();
+  }
+}
 
-  if (f === 1) {
+// ===== 스킬 각성 =====
+function updateSkill() {
+  if (y === 0 && skill.length === 0) {
+    skill.push("연속찌르기");
+    log("당신은 연속찌르기를 얻었다");
+  }
+  if (y === 65) {
+    skill[0] = "선시 슬래쉬";
+    log("연속찌르기가 각성해, 선시 슬래쉬로 바뀌었다");
+  }
+  if (y === 120) {
+    skill[0] = "낙화참";
+    log("선시 슬래쉬가 각성해, 낙화참으로 바뀌었다");
+  }
+  if (y === 240) {
+    skill[0] = "일전팔기";
+    log("낙화참이 각성해, 일전팔기로 바뀌었다");
+  }
+}
+
+// ===== 행동 =====
+function getFood() {
+  const f = Math.random() < 0.5;
+  if (f) {
+    const b = Math.floor(Math.random() * 3) + 1;
     food += b;
     log(`음식 ${b}개를 구했다`);
   } else {
@@ -57,23 +93,24 @@ function useSkill() {
     return;
   }
 
-  y++;
+  let gain = 0, cost = 0;
+  const s = skill[0];
 
-  if (skill[0] === "연속찌르기") {
-    food += 7; sta -= 30;
-    log("스태미나 30을 소모하고 음식 7개를 얻었다");
-  } else if (skill[0] === "선시 슬래쉬") {
-    food += 16; sta -= 40;
-    log("스태미나 40을 소모하고 음식 16개를 얻었다");
-  } else if (skill[0] === "낙화참") {
-    food += 38; sta -= 50;
-    log("스태미나 50을 소모하고 음식 38개를 얻었다");
-  } else if (skill[0] === "일전팔기") {
-    food += 80; sta -= 65;
-    log("스태미나 65을 소모하고 음식 80개를 얻었다");
+  if (s === "연속찌르기") { gain = 7; cost = 30; }
+  if (s === "선시 슬래쉬") { gain = 16; cost = 40; }
+  if (s === "낙화참") { gain = 38; cost = 50; }
+  if (s === "일전팔기") { gain = 80; cost = 65; }
+
+  if (sta < cost) {
+    log("스태미나가 부족하다");
+    return;
   }
 
-  skillCheck();
+  sta -= cost;
+  food += gain;
+  y++;
+  log(`스태미나 ${cost}을 소모하고 음식 ${gain}개를 얻었다`);
+  updateSkill();
   updateStatus();
 }
 
@@ -95,35 +132,5 @@ function fishing() {
   }, 1500);
 }
 
-function skillCheck() {
-  if (y === 0 && skill.length === 0) {
-    skill.push("연속찌르기");
-    log("당신은 연속찌르기를 얻었다");
-  }
-  if (y === 65) {
-    skill = ["선시 슬래쉬"];
-    log("연속찌르기가 각성해, 선시 슬래쉬로 바뀌었다");
-  }
-  if (y === 120) {
-    skill = ["낙화참"];
-    log("선시 슬래쉬가 각성해, 낙화참으로 바뀌었다");
-  }
-  if (y === 240) {
-    skill = ["일전팔기"];
-    log("낙화참이 각성해, 일전팔기로 바뀌었다");
-  }
-}
-
-log("비행기를 탔다");
-log("비행기는 언제 타도 설렌다");
-log('"오랜만에 여행이라니"');
-log('"아 좀 오래 걸리네 뭐 그냥 자야겠다"');
-log("그것이 비행기 안에서의 마지막 말이 될 줄은 몰랐다");
-log("무인도에 갖혔다");
-log("하.. 나 말곤 아무것도 할 줄 모른다");
-log("그렇기에 내가 모든걸 책임져야 한다");
-log("여기가 좀 험해서 90일은 생존 해야지 구조대가 올 것 같다");
-log("이제 시작이다");
-log("");
-
+// 초기 표시
 updateStatus();
