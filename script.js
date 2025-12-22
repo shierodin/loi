@@ -116,6 +116,22 @@ function nextDay() {
   updateStatus();
 }
 
+function ending() {
+  log("");
+  log("90일째 아침이 밝았다");
+  setTimeout(() => log("멀리서 헬기의 소리가 들린다"), 2000);
+  setTimeout(() => log("처음엔 착각인 줄 알았다"), 4000);
+  setTimeout(() => log("하지만 점점 가까워진다"), 6000);
+  setTimeout(() => log("구조대다"), 8000);
+  setTimeout(() => {
+    log("당신은 살아남았다");
+    alert("🎉 생존 엔딩 달성!");
+  }, 10000);
+
+  gameStarted = false;
+}
+
+
 // ===== 목표 =====
 function setDailyGoal() {
   goalFood = 20 + (day - 1) * 10;
