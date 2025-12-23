@@ -11,7 +11,6 @@ let dailyGoal = 20;
 let raidCount = 0;
 let enemyCount = 0;
 let bossAlive = false;
-let bossHp = 0;
 
 /* ===== DOM ===== */
 const $ = id => document.getElementById(id);
@@ -30,10 +29,17 @@ function update(){
   $("foodMax").innerText = foodMax;
 }
 
+/* ===== 시작 ===== */
+window.addEventListener("DOMContentLoaded", () => {
+  log("🏝 무인도 표류 시작");
+  update();
+});
+
 /* ===== 하루 진행 ===== */
 setInterval(()=>{
   day++;
   dailyGoal += 2;
+
   food -= dailyGoal;
   sp -= 5;
 
@@ -45,6 +51,14 @@ setInterval(()=>{
 
   update();
 }, 60000);
+
+/* ===== 스태미나 자동 회복 ===== */
+setInterval(()=>{
+  if(sta < MAX_STA){
+    sta = Math.min(MAX_STA, sta + 5);
+    update();
+  }
+}, 1000);
 
 /* ===== 생존 ===== */
 function gatherFood(){
@@ -64,6 +78,23 @@ function fish(){
   update();
 }
 
+/* ===== 음식 ===== */
+function toggleEat(){
+  const e = $("eatButtons");
+  e.style.display = e.style.display === "flex" ? "none" : "flex";
+}
+function eatFood(){
+  if(food < 5){
+    log("❌ 음식 부족");
+    return;
+  }
+  food -= 5;
+  sp = Math.min(MAX_SP, sp + 25);
+  hp = Math.min(MAX_HP, hp + 10);
+  log("🍽 음식 섭취 (허기+25 HP+10)");
+  update();
+}
+
 /* ===== 습격 ===== */
 function startRaid(){
   raidCount++;
@@ -75,6 +106,7 @@ function startRaid(){
 /* ===== 전투 UI ===== */
 function enterCombat(isBoss){
   $("normalButtons").style.display="none";
+  $("eatButtons").style.display="none";
   $("combatButtons").style.display="flex";
   $("skillButtons").style.display="none";
   $("dodgeBtn").style.display = isBoss ? "inline-block":"none";
@@ -89,14 +121,8 @@ function exitCombat(){
 function attack(){
   let dmg = foodMax;
 
-  if(bossAlive){
-    bossHp -= dmg;
-    log(`👑 보스에게 ${dmg} 피해`);
-    return;
-  }
-
   enemyCount--;
-  log("⚔️ 적 1마리 처치");
+  log(`⚔️ 적에게 ${dmg} 피해 (1마리 처치)`);
 
   if(enemyCount <= 0){
     log("✅ 습격 종료");
@@ -104,7 +130,7 @@ function attack(){
   }
 }
 
-/* ===== 패턴 회피 ===== */
+/* ===== 패턴 회피 (보스용 구조 유지) ===== */
 function dodgePattern(){
   if(Math.random() < 0.5){
     log("🌀 회피 성공!");
@@ -121,13 +147,13 @@ function toggleSkills(){
     $("skillButtons").style.display==="flex"?"none":"flex";
 }
 
-function skillBase(staCost, foodGain, power){
+function skillBase(staCost, foodGain, killCount){
   if(sta < staCost) return;
   sta -= staCost;
 
   if(enemyCount > 0){
-    enemyCount = Math.max(0, enemyCount - power);
-    log(`💥 적 ${power}마리 처치`);
+    enemyCount = Math.max(0, enemyCount - killCount);
+    log(`💥 적 ${killCount}마리 처치`);
     if(enemyCount === 0) exitCombat();
   }else{
     food += foodGain;
@@ -151,7 +177,3 @@ function gameOver(r){
   alert("💀 GAME OVER\n"+r);
   location.reload();
 }
-
-/* ===== 시작 ===== */
-log("🏝 무인도 표류 시작");
-update();
