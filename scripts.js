@@ -39,7 +39,7 @@ function update() {
 /* ===== 하루 / 습격 ===== */
 setInterval(() => {
   day++; dailyGoal += 5; food -= dailyGoal; sp -= 10;
-  if(food<0 || sp<=0){ hp-=20; }
+  if(food<0 || sp<=0){ hp -= 20; }
   if(hp<=0) gameOver("굶주림");
 
   log(`☀️ Day ${day} (목표 ${dailyGoal})`);
@@ -47,6 +47,12 @@ setInterval(() => {
   if(day===15) spawnBoss();
   update();
 }, 60000);
+
+/* ===== 스태미나 자동회복 ===== */
+setInterval(() => {
+  sta = Math.min(MAX_STA, sta + 5); // 1초마다 5 회복
+  update();
+}, 1000);
 
 /* ===== 행동 ===== */
 function gatherFood(){
