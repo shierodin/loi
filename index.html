@@ -4,16 +4,17 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>무인도 생존</title>
+
 <style>
 body{background:#111;color:#fff;font-family:Arial;margin:0;padding:10px}
 h1{text-align:center}
 .status,.buttons{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-bottom:10px}
 .box{background:#222;padding:10px;border-radius:10px;min-width:110px;text-align:center}
-button{font-size:16px;padding:14px 18px;border-radius:12px;border:none;background:#444;color:white}
+button{font-size:15px;padding:12px 16px;border-radius:12px;border:none;background:#444;color:white}
 #log{background:black;padding:10px;height:260px;overflow-y:auto;border-radius:10px}
-#subButtons,#skillButtons{display:none}
 </style>
 </head>
+
 <body>
 
 <h1>🏝 무인도 생존</h1>
@@ -24,34 +25,29 @@ button{font-size:16px;padding:14px 18px;border-radius:12px;border:none;backgroun
   <div class="box">허기<br><span id="sp"></span></div>
   <div class="box">스태미나<br><span id="sta"></span></div>
   <div class="box">음식<br><span id="food"></span></div>
-  <div class="box">무기<br><span id="weapon"></span></div>
+  <div class="box">최대 음식<br><span id="foodMax"></span></div>
 </div>
 
-<div class="buttons">
-  <button onclick="gatherFood()">🌿 음식</button>
+<div class="buttons" id="normalButtons">
+  <button onclick="gatherFood()">🌿 채집</button>
   <button onclick="fish()">🎣 낚시</button>
-  <button onclick="toggleUseFood()">🍖 사용</button>
+</div>
+
+<div class="buttons" id="combatButtons" style="display:none">
   <button onclick="attack()">⚔️ 공격</button>
   <button onclick="toggleSkills()">✨ 스킬</button>
+  <button id="dodgeBtn" onclick="dodgePattern()" style="display:none">🌀 패턴 피하기</button>
 </div>
 
-<div class="buttons" id="subButtons">
-  <button onclick="eatFood()">🍽 먹기</button>
-  <button onclick="craftWeapon()">🗡 제작</button>
-  <button onclick="upgradeWeapon()">⚒ 강화</button>
-</div>
-
-<div class="buttons" id="skillButtons">
-  <button onclick="skillSlash()">💥 연속 베기</button>
-  <button onclick="skillAwaken()">🔥 각성</button>
+<div class="buttons" id="skillButtons" style="display:none">
   <button onclick="skillStab()">⚡ 연속찌르기</button>
-  <button onclick="skillSunSlash()">🌅 선시 슬래쉬</button>
+  <button onclick="skillSun()">🌅 선시 슬래쉬</button>
   <button onclick="skillFall()">🍁 낙화참</button>
   <button onclick="skillLast()">🔥 일전팔기</button>
 </div>
 
 <div id="log"></div>
 
-<script src="scripts.js"></script>
+<script src="game.js"></script>
 </body>
 </html>
