@@ -1,26 +1,39 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Survival</title>
-  <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>서바이벌</title>
+
+<style>
+  body { font-family: Arial, sans-serif; background:#111; color:#fff; margin:0; padding:10px; }
+  h1 { text-align:center; }
+  .status, .buttons { display:flex; flex-wrap:wrap; gap:10px; justify-content:center; margin-bottom:10px; }
+  .box { background:#222; padding:10px; border-radius:10px; min-width:120px; text-align:center; font-size:18px; }
+  button { font-size:20px; padding:15px 20px; border-radius:12px; border:none; cursor:pointer; }
+  #log { background:#000; padding:10px; height:220px; overflow-y:auto; border-radius:10px; font-size:16px; }
+</style>
 </head>
+
 <body>
 
-<h1>Survival</h1>
+<h1>서바이벌</h1>
 
-<pre id="log"></pre>
-
-<div id="status"></div>
-
-<div class="buttons">
-  <button onclick="getFood()">🍖 음식 구하기</button>
-  <button onclick="useSkill()">⚔️ 스킬 쓰기</button>
-  <button onclick="fishing()">🎣 낚시</button>
-  <button onclick="eatFood()">🍴 음식 먹기</button>
+<div class="status">
+  <div class="box">Day<br><span id="day">1</span></div>
+  <div class="box">음식<br><span id="food">0</span></div>
+  <div class="box">오늘 목표<br><span id="goal">20</span></div>
 </div>
 
-<script src="script.js" defer></script>
+<div class="buttons">
+  <button onclick="fish()">🎣 낚시</button>
+  <button onclick="gatherFood()">🌿 음식 구하기</button>
+</div>
+
+<div id="log"></div>
+
+<!-- 🔥 여기 중요 -->
+<script src="scripts.js"></script>
+
 </body>
 </html>
