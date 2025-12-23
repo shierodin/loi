@@ -2,49 +2,51 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<title>무인도 생존</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🏝 무인도 생존</title>
+
 <style>
-body { background:#111; color:#eee; font-family:Arial }
-button { margin:4px; padding:8px }
-.box { display:inline-block; width:140px; border:1px solid #555; margin:4px; padding:6px }
-#log { height:220px; overflow-y:auto; border:1px solid #555; padding:6px }
+body{background:#111;color:#fff;font-family:Arial;margin:0;padding:10px}
+h1{text-align:center}
+.status,.buttons{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-bottom:10px}
+.box{background:#222;padding:10px;border-radius:10px;min-width:120px;text-align:center}
+button{font-size:16px;padding:14px 18px;border-radius:12px;border:none;background:#444;color:white}
+#log{background:black;padding:10px;height:260px;overflow-y:auto;border-radius:10px}
+.hidden{display:none}
 </style>
 </head>
+
 <body>
 
-<h2>🏝 무인도 생존</h2>
+<h1>🏝 무인도 생존</h1>
 
-<div>
-  <div class="box">날짜<br><span id="day"></span></div>
-  <div class="box">음식<br><span id="food"></span></div>
+<div class="status">
+  <div class="box">Day<br><span id="day"></span></div>
+  <div class="box">HP<br><span id="hp"></span></div>
   <div class="box">허기<br><span id="hunger"></span></div>
   <div class="box">스태미나<br><span id="stamina"></span></div>
-  <div class="box">무기<br><span id="weapon"></span></div>
+  <div class="box">음식<br><span id="food"></span></div>
   <div class="box">목표<br><span id="goal"></span></div>
+  <div class="box">무기<br><span id="weapon"></span></div>
 </div>
 
-<hr>
-
-<div id="normalButtons">
-  <button onclick="gatherFood()">🌿 채집</button>
-  <button onclick="eatFood()">🍖 음식 사용</button>
+<!-- 평상시 -->
+<div class="buttons" id="normalButtons">
+  <button onclick="gather()">🌿 음식</button>
+  <button onclick="eat()">🍖 음식 사용</button>
   <button onclick="craftWeapon()">🗡 무기 제작</button>
   <button onclick="upgradeWeapon()">⚒ 강화</button>
-  <button onclick="useSkill(0)">연속찌르기</button>
-  <button onclick="useSkill(1)">선시 슬래쉬</button>
-  <button onclick="useSkill(2)">낙화참</button>
-  <button onclick="useSkill(3)">일전팔기</button>
 </div>
 
-<div id="combatButtons" style="display:none">
-  <button onclick="attack()">⚔ 공격</button>
-  <button onclick="dodge()">🌀 패턴 피하기</button>
-  <button onclick="useSkill(currentSkill)">🔥 스킬</button>
+<!-- 전투 -->
+<div class="buttons hidden" id="combatButtons">
+  <button onclick="attack()">⚔️ 공격</button>
+  <button onclick="useSkill()">🔥 스킬</button>
+  <button onclick="dodge()" id="dodgeBtn">🌀 패턴 피하기</button>
 </div>
 
-<h3>📜 로그</h3>
 <div id="log"></div>
 
-<script defer src="game.js"></script>
+<script src="game.js"></script>
 </body>
 </html>
