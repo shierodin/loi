@@ -39,12 +39,12 @@ function update() {
 /* ===== 하루 / 습격 ===== */
 setInterval(() => {
   day++; dailyGoal += 5; food -= dailyGoal; sp -= 10;
-  if(food<0 || sp<=0){ hp -= 20; }
-  if(hp<=0) gameOver("굶주림");
+  if(food < 0 || sp <= 0) hp -= 20;
+  if(hp <= 0) gameOver("굶주림");
 
   log(`☀️ Day ${day} (목표 ${dailyGoal})`);
-  if(day%3===0) spawnEnemy();
-  if(day===15) spawnBoss();
+  if(day % 3 === 0) spawnEnemy();
+  if(day === 15) spawnBoss();
   update();
 }, 60000);
 
@@ -55,49 +55,54 @@ setInterval(() => {
 }, 1000);
 
 /* ===== 행동 ===== */
-function gatherFood(){
-  if(sta<8) return log("❌ 스태미나 부족");
-  sta-=8; let g=rand(4,7); food+=g;
+function gatherFood() {
+  if(sta < 8) return log("❌ 스태미나 부족");
+  sta -= 8; 
+  let g = rand(4,7); 
+  food += g;
   log(`🌿 음식 ${g}`);
   update();
 }
 
-let fishing=false;
-function fish(){
+let fishing = false;
+function fish() {
   if(fishing) return;
-  fishing=true; log("🎣 낚시...");
-  setTimeout(()=>{
-    let g=rand(3,5); food+=g;
+  fishing = true; 
+  log("🎣 낚시...");
+  setTimeout(() => {
+    let g = rand(3,5); food += g;
     log(`🐟 음식 ${g}`);
     update();
-  },1500);
-  setTimeout(()=>fishing=false,3000);
+  }, 1500);
+  setTimeout(() => fishing = false, 3000);
 }
 
 /* ===== 음식 ===== */
 function toggleUseFood(){ toggle("subButtons"); }
-function eatFood(){
-  if(food<5) return log("❌ 음식 부족");
-  food-=5; sp=Math.min(MAX_SP, sp+20); hp=Math.min(MAX_HP, hp+10);
+function eatFood() {
+  if(food < 5) return log("❌ 음식 부족");
+  food -= 5; sp = Math.min(MAX_SP, sp + 20); hp = Math.min(MAX_HP, hp + 10);
   log("🍽 회복");
   update();
 }
 
 /* ===== 무기 ===== */
-function craftWeapon(){
-  for(let w in weapons){
+function craftWeapon() {
+  for(let w in weapons) {
     if(food >= weapons[w].cost){
       food -= weapons[w].cost;
       weapon = w; weaponLevel = 0;
       log(`🗡 ${w} 제작`);
-      update(); return;
+      update(); 
+      return;
     }
   }
   log("❌ 음식 부족");
 }
-function upgradeWeapon(){
+
+function upgradeWeapon() {
   if(!weapon) return log("❌ 무기 없음");
-  let c = weaponLevel+1;
+  let c = weaponLevel + 1;
   if(food < c) return log("❌ 음식 부족");
   food -= c; weaponLevel++;
   log(`⚒ +${weaponLevel}`);
@@ -105,18 +110,19 @@ function upgradeWeapon(){
 }
 
 /* ===== 전투 ===== */
-function spawnEnemy(){
+function spawnEnemy() {
   enemyCount = day*2; enemyHP = 50;
   log(`⚠️ 적 ${enemyCount}명 등장`);
 }
-function attack(){
+
+function attack() {
   if(bossAlive) return bossAttack();
   if(enemyCount <= 0) return log("적 없음");
 
   let dmg = food + (weapon ? food*weapons[weapon].bonus : 0);
   enemyHP -= dmg; log(`⚔️ ${dmg} 피해`);
 
-  if(enemyHP <= 0){
+  if(enemyHP <= 0) {
     enemyCount--; enemyHP = 50;
     log(`💀 적 처치 (${enemyCount} 남음)`);
   }
@@ -124,28 +130,29 @@ function attack(){
 
 /* ===== 스킬 ===== */
 function toggleSkills(){ toggle("skillButtons"); }
-function skillSlash(){
+
+function skillSlash() {
   if(skillCooldown || enemyCount <= 0) return;
   skillCooldown = true;
-  let dmg = food*3;
-  enemyCount = Math.max(0, enemyCount-3);
+  let dmg = food * 3;
+  enemyCount = Math.max(0, enemyCount - 3);
   log(`💥 연속베기! 적 3명 처치`);
-  setTimeout(()=>skillCooldown=false,5000);
+  setTimeout(() => skillCooldown = false, 5000);
 }
 
-function skillAwaken(){
+function skillAwaken() {
   if(awakened || sta < 30) return log("❌ 각성 불가");
   awakened = true; sta -= 30;
   log("🔥 각성 상태 진입");
 }
 
-function useSkill(name, dmg){
+function useSkill(name, dmg) {
   if(!awakened) return log("❌ 각성 상태 아님");
   if(enemyCount <= 0 && !bossAlive) return log("적 없음");
 
   log(`✨ ${name} 발동!`);
 
-  if(bossAlive){
+  if(bossAlive) {
     bossHP -= dmg;
     log(`👑 보스에게 ${dmg} 피해`);
     if(bossHP <= 0) ending();
@@ -157,14 +164,15 @@ function useSkill(name, dmg){
   log(`💀 적 ${killed}명 처치`);
 }
 
-function skillStab(){ useSkill("연속찌르기", 10); }
-function skillSunSlash(){ useSkill("선시 슬래쉬", 20); }
-function skillFall(){ useSkill("낙화참", 35); }
-function skillLast(){ useSkill("일전팔기", 60); }
+function skillStab() { useSkill("연속찌르기", 10); }
+function skillSunSlash() { useSkill("선시 슬래쉬", 20); }
+function skillFall() { useSkill("낙화참", 35); }
+function skillLast() { useSkill("일전팔기", 60); }
 
 /* ===== 보스 ===== */
-function spawnBoss(){ bossAlive = true; bossHP = 1000; log("👑 보스 등장!"); }
-function bossAttack(){
+function spawnBoss() { bossAlive = true; bossHP = 1000; log("👑 보스 등장!"); }
+
+function bossAttack() {
   let dmg = weapon ? food*weapons[weapon].bonus*2 : food;
   bossHP -= dmg; hp -= rand(10,25);
   log(`👑 보스 HP ${bossHP}`);
@@ -172,22 +180,23 @@ function bossAttack(){
 }
 
 /* ===== 엔딩 ===== */
-function ending(){
+function ending() {
   bossAlive = false;
   alert("🎉 구조 신호 성공!\n무인도 탈출!");
   location.reload();
 }
-function gameOver(r){
+
+function gameOver(r) {
   alert("💀 GAME OVER\n"+r);
   location.reload();
 }
 
 /* ===== 토글 ===== */
-function toggle(id){
-  const e=$(id);
-  e.style.display = e.style.display==="none"?"flex":"none";
+function toggle(id) {
+  const e = $(id);
+  e.style.display = e.style.display === "none" ? "flex" : "none";
 }
 
 /* ===== 시작 ===== */
-log("🏝 무인도 표류 시작");
+log("개쩐다");
 update();
